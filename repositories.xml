@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<repositories version="1.0">
+	<repo quality="experimental" status="unofficial">
+		<name>plex-gentoo</name>
+		<description lang="en">Ebuilds for Plex</description>
+		<homepage>https://github.com/comio/plex-gentoo</homepage>
+		<owner type="person">
+			<email>luigi.mantellini@gmail.com</email>
+			<name>Luigi 'Comio' Mantellini</name>
+		</owner>
+		<source type="git">https://github.com/comio/plex-gentoo.git</source>
+		<source type="git">git://github.com/comio/plex-gentoo.git</source>
+		<feed>https://github.com/comio/plex-gentoo/commits/master.atom</feed>
+	</repo>
+</repositories>
