@@ -1,0 +1,22 @@
+--- lib/systemd/system/plexmediaserver.service	2016-09-13 09:07:57.222044389 +0200
++++ lib/systemd/system/plexmediaserver.service	2016-09-13 09:20:23.693014908 +0200
+@@ -1,17 +1,13 @@
+ [Unit]
+ Description=Plex Media Server for Linux
+ After=network.target
++After=avahi-daemon.service
+ 
+ [Service]
+-Environment="PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR=/var/lib/plexmediaserver/Library/Application Support"
+-Environment=PLEX_MEDIA_SERVER_HOME=/usr/lib/plexmediaserver
+-Environment=PLEX_MEDIA_SERVER_MAX_PLUGIN_PROCS=6
+-Environment=PLEX_MEDIA_SERVER_TMPDIR=/tmp
+-ExecStartPre=/bin/sh -c '/usr/bin/test -d "${PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR}" || /bin/mkdir -p "${PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR}"'
+-ExecStart=/bin/sh -c 'LD_LIBRARY_PATH=/usr/lib/plexmediaserver /usr/lib/plexmediaserver/Plex\ Media\ Server'
+ Type=simple
+ User=plex
+ Group=plex
++ExecStart=/usr/bin/start_pms
+ Restart=on-failure
+ RestartSec=5
+ StartLimitInterval=60s
