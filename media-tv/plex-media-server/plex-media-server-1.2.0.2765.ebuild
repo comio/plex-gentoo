@@ -10,7 +10,7 @@ DESCRIPTION="Plex Media Server is full featured media content streamer and manag
 HOMEPAGE="http://plex.tv/"
 
 MY_PN="plexmediaserver"
-COMMIT="837790c"
+COMMIT="2d034d4"
 MY_PV="${PV}-${COMMIT}"
 MY_P="${MY_PN}_${MY_PV}"
 
