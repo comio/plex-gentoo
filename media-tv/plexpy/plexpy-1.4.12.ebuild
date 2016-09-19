@@ -28,10 +28,10 @@ DEPEND="
 src_install() {
 	dodoc API.md CHANGELOG.md CONTRIBUTING.md ISSUE_TEMPLATE.md README.md
 	dodir /opt/plexpy/
-	cp -R contrib data lib plexpy pylintrc PlexPy.py "${D}"/opt/plexpy
+	cp -R contrib data lib plexpy pylintrc PlexPy.py "${D}/opt/plexpy"
 	dodir /etc/plexpy
 	dosym  /opt/plexpy/config.ini /etc/plexpy/config.ini
-	fowners -R plex:plex /opt/plexpy
+	fowners -R plex:plex "/opt/plexpy"
 
 	systemd_dounit  "${FILESDIR}"/plexpy.service
 }
