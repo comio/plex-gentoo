@@ -92,6 +92,9 @@ src_install() {
 
 	# menu items
 	domenu "${FILESDIR}/plexmediaplayer.desktop"
+	insinto "/usr/share/xsessions"
+        doins "${FILESDIR}"/plexmediaplayer.desktop
+
 	newicon -s 16 "${FILESDIR}/plexmediaplayer-16x16.png" plexmediaplayer.png
 	newicon -s 24 "${FILESDIR}/plexmediaplayer-24x24.png" plexmediaplayer.png
 	newicon -s 32 "${FILESDIR}/plexmediaplayer-32x32.png" plexmediaplayer.png

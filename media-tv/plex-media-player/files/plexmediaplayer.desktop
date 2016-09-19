@@ -5,3 +5,4 @@ Icon=plexmediaplayer
 Terminal=false
 Type=Application
 Categories=AudioVideo;Player;
+DesktopNames=PlexMediaPlayer
