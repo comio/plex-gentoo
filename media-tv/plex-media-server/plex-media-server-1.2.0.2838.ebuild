@@ -10,7 +10,7 @@ DESCRIPTION="Plex Media Server is full featured media content streamer and manag
 HOMEPAGE="http://plex.tv/"
 
 MY_PN="plexmediaserver"
-COMMIT="2d034d4"
+COMMIT="a68e2fe"
 MY_PV="${PV}-${COMMIT}"
 MY_P="${MY_PN}_${MY_PV}"
 
@@ -26,7 +26,7 @@ SRC_URI="
 LICENSE="PMS-EULA"
 SLOT="0"
 KEYWORDS="-* ~amd64 ~x86"
-IUSE="pax_kernel systemd"
+IUSE="pax_kernel"
 
 DEPEND="
 	net-dns/avahi
@@ -47,12 +47,8 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/start_pms.patch"
-
 	epatch "${FILESDIR}/plexmediamanager.desktop.patch"
-
-	if use systemd; then
-		epatch "${FILESDIR}/plexmediaserver.service.patch"
-	fi
+	epatch "${FILESDIR}/plexmediaserver.service.patch"
 
 	default
 }
@@ -85,9 +81,7 @@ src_install() {
 	# init files
 	doinitd "${FILESDIR}"/plexmediaserver
 
-	if use systemd; then
-		systemd_dounit lib/systemd/system/plexmediaserver.service
-	fi
+	systemd_dounit lib/systemd/system/plexmediaserver.service
 
 	# directories
 	dodir /var/lib/plexmediaserver
