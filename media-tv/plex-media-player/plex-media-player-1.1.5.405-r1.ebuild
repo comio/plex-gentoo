@@ -78,7 +78,7 @@ src_configure() {
 		-DENABLE_CEC=$(usex cec)
 		-DENABLE_SDL2=$(usex joystick)
 		-DENABLE_LIRC=$(usex lirc)
-		-DQTROOT=/usr
+		-DQTROOT=/
 	)
 
 	export BUILD_NUMBER="${BUILD}"
@@ -93,7 +93,7 @@ src_install() {
 	# menu items
 	domenu "${FILESDIR}/plexmediaplayer.desktop"
 	insinto "/usr/share/xsessions"
-	doins "${FILESDIR}/plexmediaplayer.desktop"
+	doins "${FILESDIR}/plexmediaplayer-session.desktop"
 
 	newicon -s 16 "${FILESDIR}/plexmediaplayer-16x16.png" plexmediaplayer.png
 	newicon -s 24 "${FILESDIR}/plexmediaplayer-24x24.png" plexmediaplayer.png
