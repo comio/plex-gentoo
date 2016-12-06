@@ -1,1 +1,2 @@
 =media-tv/plex-media-server-1.2.0*
+=media-tv/plex-media-player-1.2.0.481

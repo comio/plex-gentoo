@@ -9,16 +9,12 @@ inherit eutils cmake-utils
 DESCRIPTION="next generation Plex client"
 HOMEPAGE="http://plex.tv/"
 
-COMMIT="5d0c3c70"
-WEBCLIENT_VERSION="2.10.8"
-WEBCLIENT_BUILD="160"
-WEBCLIENT_COMMIT="e96a2ba"
+COMMIT="b45bbf24"
 MY_PV="${PV}-${COMMIT}"
 MY_P="${PN}-${MY_PV}"
 
 SRC_URI="
 	https://github.com/plexinc/${PN}/archive/v${MY_PV}.tar.gz -> ${P}.tar.gz
-	https://nightlies.plex.tv/directdl/plex-dependencies/plex-web-client-plexmediaplayer/${WEBCLIENT_BUILD}/plex-web-client-pmp-${WEBCLIENT_VERSION}-${WEBCLIENT_COMMIT}.tbz2
 "
 
 LICENSE="GPL-2"
@@ -27,12 +23,13 @@ KEYWORDS="~amd64 ~x86"
 IUSE="cec joystick lirc"
 
 DEPEND="
-	>=dev-qt/qtcore-5.6
-	>=dev-qt/qtnetwork-5.6
-	>=dev-qt/qtxml-5.6
-	>=dev-qt/qtwebchannel-5.6[qml]
-	>=dev-qt/qtwebengine-5.6
-	>=dev-qt/qtx11extras-5.6
+	dev-util/conan
+	>=dev-qt/qtcore-5.7.0
+	>=dev-qt/qtnetwork-5.7.0
+	>=dev-qt/qtxml-5.7.0
+	>=dev-qt/qtwebchannel-5.7.0[qml]
+	>=dev-qt/qtwebengine-5.7.0
+	>=dev-qt/qtx11extras-5.7.0
 	>=media-video/mpv-0.11.0[libmpv]
 	virtual/opengl
 	x11-libs/libX11
@@ -55,7 +52,8 @@ RDEPEND="
 	)
 "
 
-PATCHES=( "${FILESDIR}"/git-revision.patch )
+PATCHES=( "${FILESDIR}/git-revision.patch"
+	  "${FILESDIR}/fix-conan.patch" )
 
 S="${WORKDIR}/${MY_P}"
 
@@ -66,11 +64,11 @@ src_unpack() {
 }
 
 src_prepare() {
-	cp "${DISTDIR}"/plex-web-client-pmp-"${WEBCLIENT_VERSION}"-"${WEBCLIENT_COMMIT}".tbz2 "${S}"
-
 	cmake-utils_src_prepare
 
 	eapply_user
+
+	CONAN_USER_HOME="${S}" conan remote add plex  http://conan.plex.tv && conan install . && die
 }
 
 src_configure() {
