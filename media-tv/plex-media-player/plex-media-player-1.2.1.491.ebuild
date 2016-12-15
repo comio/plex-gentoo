@@ -17,13 +17,12 @@ SRC_URI="
 	https://github.com/plexinc/${PN}/archive/v${MY_PV}.tar.gz -> ${P}.tar.gz
 "
 
-LICENSE="GPL-2"
+LICENSE="GPL-2 PMS-EULA"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="cec joystick lirc"
+IUSE="cec +desktop joystick lirc"
 
-DEPEND="
-	dev-util/conan
+CDEPEND="
 	>=dev-qt/qtcore-5.7.1
 	>=dev-qt/qtnetwork-5.7.1
 	>=dev-qt/qtxml-5.7.1
@@ -45,8 +44,12 @@ DEPEND="
 	)
 "
 
+DEPEND="
+	${CDEPEND}
+"
+
 RDEPEND="
-	${DEPEND}
+	${CDEPEND}
 
 	lirc? (
 		app-misc/lirc
@@ -64,12 +67,14 @@ src_unpack() {
 }
 
 src_prepare() {
+	sed -i -e '/^  install(FILES ${QTROOT}\/resources\/qtwebengine_devtools_resources.pak DESTINATION resources)$/d' src/CMakeLists.txt
+
 	cmake-utils_src_prepare
 
 	eapply_user
 
 	CONAN_USER_HOME="${S}" conan remote add plex http://conan.plex.tv || die
-	CONAN_USER_HOME="${S}" conan install . || die
+	CONAN_USER_HOME="${S}" conan install -o include_desktop=$(usex desktop True False) || die
 }
 
 src_configure() {
@@ -77,7 +82,7 @@ src_configure() {
 		-DENABLE_CEC=$(usex cec)
 		-DENABLE_SDL2=$(usex joystick)
 		-DENABLE_LIRC=$(usex lirc)
-		-DQTROOT=/usr/share/qt5/
+		-DQTROOT=/usr
 	)
 
 	export BUILD_NUMBER="${BUILD}"
