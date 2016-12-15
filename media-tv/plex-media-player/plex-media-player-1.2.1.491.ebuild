@@ -9,7 +9,7 @@ inherit eutils cmake-utils
 DESCRIPTION="next generation Plex client"
 HOMEPAGE="http://plex.tv/"
 
-COMMIT="b45bbf24"
+COMMIT="b014ec9d"
 MY_PV="${PV}-${COMMIT}"
 MY_P="${PN}-${MY_PV}"
 
@@ -24,12 +24,12 @@ IUSE="cec joystick lirc"
 
 DEPEND="
 	dev-util/conan
-	>=dev-qt/qtcore-5.7.0
-	>=dev-qt/qtnetwork-5.7.0
-	>=dev-qt/qtxml-5.7.0
-	>=dev-qt/qtwebchannel-5.7.0[qml]
-	>=dev-qt/qtwebengine-5.7.0
-	>=dev-qt/qtx11extras-5.7.0
+	>=dev-qt/qtcore-5.7.1
+	>=dev-qt/qtnetwork-5.7.1
+	>=dev-qt/qtxml-5.7.1
+	>=dev-qt/qtwebchannel-5.7.1[qml]
+	>=dev-qt/qtwebengine-5.7.1
+	>=dev-qt/qtx11extras-5.7.1
 	>=media-video/mpv-0.11.0[libmpv]
 	virtual/opengl
 	x11-libs/libX11
@@ -44,6 +44,7 @@ DEPEND="
 		virtual/libiconv
 	)
 "
+
 RDEPEND="
 	${DEPEND}
 
@@ -52,8 +53,7 @@ RDEPEND="
 	)
 "
 
-PATCHES=( "${FILESDIR}/git-revision.patch"
-	  "${FILESDIR}/fix-conan.patch" )
+PATCHES=( "${FILESDIR}/git-revision.patch" )
 
 S="${WORKDIR}/${MY_P}"
 
@@ -68,7 +68,8 @@ src_prepare() {
 
 	eapply_user
 
-	CONAN_USER_HOME="${S}" conan remote add plex  http://conan.plex.tv && conan install . && die
+	CONAN_USER_HOME="${S}" conan remote add plex http://conan.plex.tv || die
+	CONAN_USER_HOME="${S}" conan install . || die
 }
 
 src_configure() {
@@ -76,7 +77,7 @@ src_configure() {
 		-DENABLE_CEC=$(usex cec)
 		-DENABLE_SDL2=$(usex joystick)
 		-DENABLE_LIRC=$(usex lirc)
-		-DQTROOT=/
+		-DQTROOT=/usr/share/qt5/
 	)
 
 	export BUILD_NUMBER="${BUILD}"
