@@ -23,12 +23,13 @@ KEYWORDS="~amd64 ~x86"
 IUSE="cec +desktop joystick lirc"
 
 CDEPEND="
-	>=dev-qt/qtcore-5.7.1
-	>=dev-qt/qtnetwork-5.7.1
-	>=dev-qt/qtxml-5.7.1
-	>=dev-qt/qtwebchannel-5.7.1[qml]
-	>=dev-qt/qtwebengine-5.7.1
-	>=dev-qt/qtx11extras-5.7.1
+	>=dev-qt/qtcore-5.7
+	>=dev-qt/qtnetwork-5.7
+	>=dev-qt/qtxml-5.7
+	>=dev-qt/qtwebchannel-5.7[qml]
+	>=dev-qt/qtwebengine-5.7
+	>=dev-qt/qtdeclarative-5.7
+	>=dev-qt/qtx11extras-5.7
 	>=media-video/mpv-0.11.0[libmpv]
 	virtual/opengl
 	x11-libs/libX11
@@ -64,6 +65,11 @@ CMAKE_IN_SOURCE_BUILD=1
 
 src_unpack() {
 	unpack "${P}".tar.gz
+
+	cd "${S}"
+
+	CONAN_USER_HOME="${S}" conan remote add plex http://conan.plex.tv || die
+	CONAN_USER_HOME="${S}" conan install -o include_desktop=$(usex desktop True False) || die
 }
 
 src_prepare() {
@@ -72,9 +78,6 @@ src_prepare() {
 	cmake-utils_src_prepare
 
 	eapply_user
-
-	CONAN_USER_HOME="${S}" conan remote add plex http://conan.plex.tv || die
-	CONAN_USER_HOME="${S}" conan install -o include_desktop=$(usex desktop True False) || die
 }
 
 src_configure() {
@@ -82,7 +85,7 @@ src_configure() {
 		-DENABLE_CEC=$(usex cec)
 		-DENABLE_SDL2=$(usex joystick)
 		-DENABLE_LIRC=$(usex lirc)
-		-DQTROOT=/usr
+		-DQTROOT=/
 	)
 
 	export BUILD_NUMBER="${BUILD}"
