@@ -1,7 +1,8 @@
 [Desktop Entry]
-Name=Plex Media Player
+Name=Plex Media Player on Wayland
 Exec=plexmediaplayer --scale-factor 1
 Icon=plexmediaplayer
 Terminal=false
 Type=Application
-DesktopNames=PlexMediaPlayer
+Categories=AudioVideo;Player;
+DesktopNames=PlexMediaPlayerWayland

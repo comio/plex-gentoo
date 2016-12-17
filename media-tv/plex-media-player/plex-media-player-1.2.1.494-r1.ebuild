@@ -101,6 +101,8 @@ src_install() {
 	domenu "${FILESDIR}/plexmediaplayer.desktop"
 	insinto "/usr/share/xsessions"
 	doins "${FILESDIR}/plexmediaplayer-session.desktop"
+	insinto "/usr/share/wayland-sessions"
+	doins "${FILESDIR}/plexmediaplayer-wayland.desktop"
 
 	newicon -s 16 "${FILESDIR}/plexmediaplayer-16x16.png" plexmediaplayer.png
 	newicon -s 24 "${FILESDIR}/plexmediaplayer-24x24.png" plexmediaplayer.png
