@@ -63,7 +63,10 @@ RDEPEND="
 	)
 "
 
-PATCHES=( "${FILESDIR}/git-revision.patch" )
+PATCHES=(
+	"${FILESDIR}/iconv-fix.patch"
+	"${FILESDIR}/git-revision.patch"
+)
 
 S="${WORKDIR}/${MY_P}"
 
