@@ -9,7 +9,7 @@ inherit eutils
 DESCRIPTION="Plex's official Plex add-on for Kodi."
 HOMEPAGE="http://plex.tv/"
 MY_PN="script.plex"
-GIT_COMMIT="d02ee3f520466810be8c5aed72dafe9219b9bb99"
+GIT_COMMIT="64938ebcecbb32facfa73e8cc5fb5c3b4c373b8c"
 SRC_URI="https://github.com/plexinc/plex-for-kodi/archive/${GIT_COMMIT}.zip -> ${P}-${GIT_COMMIT}.zip"
 
 LICENSE="PMS-EULA"
