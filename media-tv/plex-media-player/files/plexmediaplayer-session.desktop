@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Plex Media Player
-Exec=plexmediaplayer --scale-factor 1
+Exec=plexmediaplayer --tv --fullscreen
 Icon=plexmediaplayer
 Terminal=false
 Type=Application
