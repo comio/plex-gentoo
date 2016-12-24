@@ -2,6 +2,10 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
+		<email>fearedbliss@gentoo.org</email>
+		<name>Jonathan Vasquez</name>
+	</maintainer>
+	<maintainer type="person">
 		<email>luigi.mantellini@gmail.com</email>
 		<name>Luigi 'Comio' Mantellini</name>
 	</maintainer>
