@@ -48,7 +48,7 @@ S="${WORKDIR}"
 
 pkg_setup() {
 	enewgroup ${_USERNAME}
-	enewuser ${_USERNAME} -1 /bin/bash /var/lib/${_APPNAME} ${_USERNAME}
+	enewuser ${_USERNAME} -1 /bin/bash /var/lib/${_APPNAME} "${_USERNAME},video"
 }
 
 src_unpack() {
