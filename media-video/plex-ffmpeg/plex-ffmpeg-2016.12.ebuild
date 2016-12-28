@@ -411,13 +411,8 @@ multilib_src_compile() {
 multilib_src_install() {
 	emake V=1 DESTDIR="${D}" install
 
-	echo "#!/bin/sh" > "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
-	echo "" >> "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
-	echo "LD_LIBRARY_PATH=\"${EPREFIX}/usr/$(get_libdir)/${PN}\" \"${EPREFIX}/usr/$(get_libdir)/${PN}/ffmpeg\"" >> "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
-
-	chmod +x "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
-
-	dosym "${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}" "/usr/bin/${PN}"
+	exeinto "${EPREFIX}/usr/$(get_libdir)/${PN}"
+	doexe "${FILESDIR}/${PN}"
 }
 
 multilib_src_install_all() {
