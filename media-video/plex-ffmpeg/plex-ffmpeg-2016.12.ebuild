@@ -55,7 +55,7 @@ FFMPEG_FLAG_MAP=(
 		zvbi:libzvbi
 		# libavfilter options
 		bs2b:libbs2b chromaprint ebur128:libebur128 flite:libflite frei0r
-		fribidi:libfribidi fontconfig ladspa libass truetype:libfreetype
+		fribidi:libfribidi fontconfig ladspa truetype:libfreetype
 		rubberband:librubberband zimg:libzimg
 		# libswresample options
 		libsoxr
@@ -194,7 +194,7 @@ RDEPEND="
 		>=sys-libs/libraw1394-2.1.0-r1[${MULTILIB_USEDEP}]
 	)
 	jpeg2k? ( >=media-libs/openjpeg-2:2[${MULTILIB_USEDEP}] )
-	libass? ( >=media-libs/libass-0.10.2[${MULTILIB_USEDEP}] )
+	>=media-libs/libass-0.10.2[${MULTILIB_USEDEP}]
 	libcaca? ( >=media-libs/libcaca-0.99_beta18-r1[${MULTILIB_USEDEP}] )
 	libilbc? ( >=media-libs/libilbc-2[${MULTILIB_USEDEP}] )
 	libsoxr? ( >=media-libs/soxr-0.1.0[${MULTILIB_USEDEP}] )
@@ -362,8 +362,10 @@ multilib_src_configure() {
 	# Mandatory configuration
 	myconf=(
 		--enable-avfilter
+		--enable-filters
 		--enable-avresample
 		--disable-stripping
+		--enable-libass
 		"${myconf[@]}"
 	)
 
@@ -408,7 +410,14 @@ multilib_src_compile() {
 
 multilib_src_install() {
 	emake V=1 DESTDIR="${D}" install
-	dosym "${EPREFIX}/usr/$(get_libdir)/${PN}/ffmpeg" "/usr/bin/${PN}"
+
+	echo "#!/bin/sh" > "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
+	echo "" >> "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
+	echo "LD_LIBRARY_PATH=\"${EPREFIX}/usr/$(get_libdir)/${PN}\" \"${EPREFIX}/usr/$(get_libdir)/${PN}/ffmpeg\"" >> "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
+
+	chmod +x "${D}/${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}"
+
+	dosym "${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}" "/usr/bin/${PN}"
 }
 
 multilib_src_install_all() {
