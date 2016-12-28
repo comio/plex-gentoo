@@ -72,18 +72,28 @@ FFMPEG_ENCODER_FLAG_MAP=(
 )
 
 IUSE="
-	+encode pic static-libs test v4l
+	+encode pic static-libs test
 	${FFMPEG_FLAG_MAP[@]%:*}
 	${FFMPEG_ENCODER_FLAG_MAP[@]%:*}
 "
 
 # Disable documentation.
 FFMPEG_DISABLE_FLAG=(
+	# Documentation
 	doc
 	htmlpages
 	manpages
 	podpages
 	txtpages
+
+	# Programs
+	ffplay
+	ffprobe
+	ffserver
+
+	# Devices
+	indevs
+	outdevs
 )
 
 # Strings for CPU features in the useflag[:configure_option] form
@@ -188,7 +198,6 @@ RDEPEND="
 	libcaca? ( >=media-libs/libcaca-0.99_beta18-r1[${MULTILIB_USEDEP}] )
 	libilbc? ( >=media-libs/libilbc-2[${MULTILIB_USEDEP}] )
 	libsoxr? ( >=media-libs/soxr-0.1.0[${MULTILIB_USEDEP}] )
-	libv4l? ( >=media-libs/libv4l-0.9.5[${MULTILIB_USEDEP}] )
 	lzma? ( >=app-arch/xz-utils-5.0.5-r1[${MULTILIB_USEDEP}] )
 	mmal? ( media-libs/raspberrypi-userland )
 	modplug? ( >=media-libs/libmodplug-0.8.8.4-r1[${MULTILIB_USEDEP}] )
@@ -230,7 +239,6 @@ DEPEND="${RDEPEND}
 	ladspa? ( >=media-libs/ladspa-sdk-1.13-r2[${MULTILIB_USEDEP}] )
 	cpu_flags_x86_mmx? ( >=dev-lang/yasm-1.2 )
 	test? ( net-misc/wget sys-devel/bc )
-	v4l? ( sys-kernel/linux-headers )
 "
 
 RDEPEND="${RDEPEND}
@@ -251,7 +259,6 @@ GPL_REQUIRED_USE="
 	)
 "
 REQUIRED_USE="
-	libv4l? ( v4l )
 	test? ( encode )
 	${GPL_REQUIRED_USE}
 	${CPU_REQUIRED_USE}"
@@ -379,8 +386,11 @@ multilib_src_configure() {
 	set -- "${S}/configure" \
 		--prefix="${EPREFIX}/usr" \
 		--bindir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
+		--datadir="${EPREFIX}/share/${PN}" \
+		--docdir="${EPREFIX}/share/doc/${PN}" \
 		--libdir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
 		--shlibdir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
+		--incdir="${PREFIX}/usr/include/${PN}" \
 		--enable-shared \
 		--cc="$(tc-getCC)" \
 		--cxx="$(tc-getCXX)" \
@@ -398,6 +408,7 @@ multilib_src_compile() {
 
 multilib_src_install() {
 	emake V=1 DESTDIR="${D}" install
+	dosym "${EPREFIX}/usr/$(get_libdir)/${PN}/ffmpeg" "/usr/bin/${PN}"
 }
 
 multilib_src_install_all() {
