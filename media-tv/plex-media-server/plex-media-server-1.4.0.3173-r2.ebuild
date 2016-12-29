@@ -26,9 +26,13 @@ LICENSE="Plex"
 RESTRICT="mirror bindist strip"
 KEYWORDS="-* ~amd64 ~x86"
 
+IUSE="plex-ffmpeg"
+
 DEPEND="
 	net-dns/avahi
 	sys-apps/fix-gnustack"
+
+RDEPEND="plex-ffmpeg? ( media-video/plex-ffmpeg )"
 
 QA_DESKTOP_FILE="usr/share/applications/plexmediamanager.desktop"
 QA_PREBUILT="*"
@@ -57,7 +61,11 @@ src_unpack() {
 
 src_install() {
 	# Copy main files over to image and preserve permissions so it is portable
+	if use plex-ffmpeg; then
+		find -name "Plex Transcoder" -exec mv {} {}.orig \; -exec ln -sf /usr/bin/plex-ffmpeg {} \;
+	fi
 	cp -rp usr/ "${ED}" || die
+
 
 	# Move the config to the correct place
 	local CONFIG_VANILLA="${S}/etc/default/plexmediaserver"

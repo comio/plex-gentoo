@@ -19,5 +19,6 @@
 	</upstream>
 	<use>
 		<flag name="pax_kernel">Mark the necessary executables for use under a PaX kernel</flag>
+		<flag name="plex-ffmpeg">Replace the Transcoder with plex-ffmpeg package.</flag>
 	</use>
 </pkgmetadata>
