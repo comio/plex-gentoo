@@ -127,7 +127,7 @@ CPU_FEATURES_MAP="
 "
 
 FFTOOLS=( aviocat cws2fws ffescape ffeval ffhash fourcc2pixfmt graph2dot ismindex pktdumper qt-faststart sidxindex trasher )
-IUSE="${IUSE} ${FFTOOLS[@]/#/+fftools_}"
+IUSE="${IUSE} ${FFTOOLS[@]/#/fftools_}"
 
 RDEPEND="
 	alsa? ( >=media-libs/alsa-lib-1.0.27.2[${MULTILIB_USEDEP}] )
@@ -433,6 +433,12 @@ multilib_src_install() {
 			fi
 		done
 	fi
+
+	exeinto "${EPREFIX}/usr/$(get_libdir)/${PN}"
+	doexe "${FILESDIR}/${PN}"
+
+	into "${EPREFIX}/usr/bin"
+	dosym "${EPREFIX}/usr/$(get_libdir)/${PN}/${PN}" "${EPREFIX}/usr/bin/${PN}"
 }
 
 multilib_src_install_all() {
