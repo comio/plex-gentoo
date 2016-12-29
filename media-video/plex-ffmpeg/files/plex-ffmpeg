@@ -4,7 +4,7 @@ PLEX_FFMPEG_DIR="$(dirname "$(realpath -e "$0")")"
 
 export LD_LIBRARY_PATH="${PLEX_FFMPEG_DIR}"
 export -n LIBVA_DRIVERS_PATH
-export -n LIBVA_DRIVERS_NAME
+# export -n LIBVA_DRIVERS_NAME
 
-"${PLEX_FFMPEG_DIR}/ffmpeg" "$@"
+exec "${PLEX_FFMPEG_DIR}/ffmpeg" "$@"
 

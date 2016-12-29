@@ -4,7 +4,7 @@
 
 EAPI=6
 
-inherit eutils flag-o-matic multilib multilib-minimal toolchain-funcs ${SCM}
+inherit eutils flag-o-matic multilib multilib-minimal toolchain-funcs
 
 DESCRIPTION="Plex Transcoder, a ffmpeg fork from Plex Inc."
 HOMEPAGE="https://www.plex.tv/"
@@ -34,7 +34,6 @@ LICENSE="
 
 KEYWORDS="~amd64 ~x86"
 
-
 # Options to use as use_enable in the foo[:bar] form.
 # This will feed configure with $(use_enable foo bar)
 # or $(use_enable foo foo) if no :bar is set.
@@ -42,11 +41,13 @@ KEYWORDS="~amd64 ~x86"
 FFMPEG_FLAG_MAP=(
 		+bzip2:bzlib cpudetection:runtime-cpudetect debug gcrypt gnutls gmp
 		+gpl +hardcoded-tables +iconv lzma +network openssl +postproc
-		samba:libsmbclient +vaapi vdpau X:xlib xcb:libxcb
+		samba:libsmbclient sdl:ffplay sdl:sdl2 +vaapi vdpau X:xlib xcb:libxcb
 		xcb:libxcb-shm xcb:libxcb-xfixes +zlib
 		# libavdevice options
 		cdio:libcdio iec61883:libiec61883 ieee1394:libdc1394 libcaca openal
 		opengl
+		# indevs
+		libv4l:libv4l2 pulseaudio:libpulse
 		# decoders
 		amr:libopencore-amrwb amr:libopencore-amrnb fdk:libfdk-aac
 		jpeg2k:libopenjpeg bluray:libbluray celt:libcelt gme:libgme gsm:libgsm
@@ -55,7 +56,7 @@ FFMPEG_FLAG_MAP=(
 		zvbi:libzvbi
 		# libavfilter options
 		bs2b:libbs2b chromaprint ebur128:libebur128 flite:libflite frei0r
-		fribidi:libfribidi fontconfig ladspa truetype:libfreetype
+		fribidi:libfribidi fontconfig ladspa libass truetype:libfreetype
 		rubberband:librubberband zimg:libzimg
 		# libswresample options
 		libsoxr
@@ -72,29 +73,10 @@ FFMPEG_ENCODER_FLAG_MAP=(
 )
 
 IUSE="
-	+encode pic static-libs test
+	alsa doc +encode jack oss pic static-libs test v4l
 	${FFMPEG_FLAG_MAP[@]%:*}
 	${FFMPEG_ENCODER_FLAG_MAP[@]%:*}
 "
-
-# Disable documentation.
-FFMPEG_DISABLE_FLAG=(
-	# Documentation
-	doc
-	htmlpages
-	manpages
-	podpages
-	txtpages
-
-	# Programs
-	ffplay
-	ffprobe
-	ffserver
-
-	# Devices
-	indevs
-	outdevs
-)
 
 # Strings for CPU features in the useflag[:configure_option] form
 # if :configure_option isn't set, it will use 'useflag' as configure option
@@ -144,9 +126,11 @@ CPU_FEATURES_MAP="
 	amd64:X86
 "
 
-IUSE="${IUSE}"
+FFTOOLS=( aviocat cws2fws ffescape ffeval ffhash fourcc2pixfmt graph2dot ismindex pktdumper qt-faststart sidxindex trasher )
+IUSE="${IUSE} ${FFTOOLS[@]/#/+fftools_}"
 
 RDEPEND="
+	alsa? ( >=media-libs/alsa-lib-1.0.27.2[${MULTILIB_USEDEP}] )
 	amr? ( >=media-libs/opencore-amr-0.1.3-r1[${MULTILIB_USEDEP}] )
 	bluray? ( >=media-libs/libbluray-0.3.0-r1[${MULTILIB_USEDEP}] )
 	bs2b? ( >=media-libs/libbs2b-3.1.0-r1[${MULTILIB_USEDEP}] )
@@ -193,11 +177,13 @@ RDEPEND="
 		>=media-libs/libdc1394-2.2.1[${MULTILIB_USEDEP}]
 		>=sys-libs/libraw1394-2.1.0-r1[${MULTILIB_USEDEP}]
 	)
+	jack? ( virtual/jack[${MULTILIB_USEDEP}] )
 	jpeg2k? ( >=media-libs/openjpeg-2:2[${MULTILIB_USEDEP}] )
-	>=media-libs/libass-0.10.2[${MULTILIB_USEDEP}]
+	libass? ( >=media-libs/libass-0.10.2[${MULTILIB_USEDEP}] )
 	libcaca? ( >=media-libs/libcaca-0.99_beta18-r1[${MULTILIB_USEDEP}] )
 	libilbc? ( >=media-libs/libilbc-2[${MULTILIB_USEDEP}] )
 	libsoxr? ( >=media-libs/soxr-0.1.0[${MULTILIB_USEDEP}] )
+	libv4l? ( >=media-libs/libv4l-0.9.5[${MULTILIB_USEDEP}] )
 	lzma? ( >=app-arch/xz-utils-5.0.5-r1[${MULTILIB_USEDEP}] )
 	mmal? ( media-libs/raspberrypi-userland )
 	modplug? ( >=media-libs/libmodplug-0.8.8.4-r1[${MULTILIB_USEDEP}] )
@@ -205,10 +191,12 @@ RDEPEND="
 	opengl? ( >=virtual/opengl-7.0-r1[${MULTILIB_USEDEP}] )
 	openssl? ( >=dev-libs/openssl-1.0.1h-r2:0[${MULTILIB_USEDEP}] )
 	opus? ( >=media-libs/opus-1.0.2-r2[${MULTILIB_USEDEP}] )
+	pulseaudio? ( >=media-sound/pulseaudio-2.1-r1[${MULTILIB_USEDEP}] )
 	librtmp? ( >=media-video/rtmpdump-2.4_p20131018[${MULTILIB_USEDEP}] )
 	rubberband? ( >=media-libs/rubberband-1.8.1-r1[${MULTILIB_USEDEP}] )
 	samba? ( >=net-fs/samba-3.6.23-r1[${MULTILIB_USEDEP}] )
 	schroedinger? ( >=media-libs/schroedinger-1.0.11-r1[${MULTILIB_USEDEP}] )
+	sdl? ( media-libs/libsdl2[sound,video,${MULTILIB_USEDEP}] )
 	speex? ( >=media-libs/speex-1.2_rc1-r1[${MULTILIB_USEDEP}] )
 	ssh? ( >=net-libs/libssh-0.5.5[${MULTILIB_USEDEP}] )
 	truetype? ( >=media-libs/freetype-2.5.0.1:2[${MULTILIB_USEDEP}] )
@@ -235,10 +223,12 @@ RDEPEND="
 
 DEPEND="${RDEPEND}
 	>=sys-devel/make-3.81
+	doc? ( sys-apps/texinfo )
 	>=virtual/pkgconfig-0-r1[${MULTILIB_USEDEP}]
 	ladspa? ( >=media-libs/ladspa-sdk-1.13-r2[${MULTILIB_USEDEP}] )
 	cpu_flags_x86_mmx? ( >=dev-lang/yasm-1.2 )
 	test? ( net-misc/wget sys-devel/bc )
+	v4l? ( sys-kernel/linux-headers )
 "
 
 RDEPEND="${RDEPEND}
@@ -259,6 +249,8 @@ GPL_REQUIRED_USE="
 	)
 "
 REQUIRED_USE="
+	libv4l? ( v4l )
+	fftools_cws2fws? ( zlib )
 	test? ( encode )
 	${GPL_REQUIRED_USE}
 	${CPU_REQUIRED_USE}"
@@ -271,7 +263,7 @@ S="${WORKDIR}/${P}"
 PATCHES=( )
 
 MULTILIB_WRAPPED_HEADERS=(
-	/usr/include/libavutil/avconfig.h
+	/usr/include/${PN}/libavutil/avconfig.h
 )
 
 src_unpack() {
@@ -279,7 +271,6 @@ src_unpack() {
 	cd "${S}"
 	unpack "${A}"
 }
-
 
 src_prepare() {
 	if [[ "${PV%_p*}" != "${PV}" ]] ; then # Snapshot
@@ -307,8 +298,16 @@ multilib_src_configure() {
 		myconf+=( --disable-encoders )
 	fi
 
-	for i in "${FFMPEG_DISABLE_FLAG[@]}"; do
-		myconf+=( --disable-$i )
+	# Indevs
+	use v4l || myconf+=( --disable-indev=v4l2 --disable-outdev=v4l2 )
+	for i in alsa oss jack ; do
+		use ${i} || myconf+=( --disable-indev=${i} )
+	done
+	use xcb || ffuse+=( X:x11grab )
+
+	# Outdevs
+	for i in alsa oss sdl ; do
+		use ${i} || myconf+=( --disable-outdev=${i} )
 	done
 
 	# Decoders
@@ -362,10 +361,8 @@ multilib_src_configure() {
 	# Mandatory configuration
 	myconf=(
 		--enable-avfilter
-		--enable-filters
 		--enable-avresample
 		--disable-stripping
-		--enable-libass
 		"${myconf[@]}"
 	)
 
@@ -385,6 +382,13 @@ multilib_src_configure() {
 		esac
 	fi
 
+	# doc
+	myconf+=(
+		$(multilib_native_use_enable doc)
+		$(multilib_native_use_enable doc htmlpages)
+		$(multilib_native_enable manpages)
+	)
+
 	set -- "${S}/configure" \
 		--prefix="${EPREFIX}/usr" \
 		--bindir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
@@ -393,6 +397,8 @@ multilib_src_configure() {
 		--libdir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
 		--shlibdir="${EPREFIX}/usr/$(get_libdir)/${PN}" \
 		--incdir="${PREFIX}/usr/include/${PN}" \
+		--docdir="${EPREFIX}/usr/share/doc/${PN}/html" \
+		--mandir="${EPREFIX}/usr/share/man/${PF}/man" \
 		--enable-shared \
 		--cc="$(tc-getCC)" \
 		--cxx="$(tc-getCXX)" \
@@ -406,13 +412,27 @@ multilib_src_configure() {
 
 multilib_src_compile() {
 	emake V=1
+
+	if multilib_is_native_abi; then
+		for i in "${FFTOOLS[@]}" ; do
+			if use fftools_${i} ; then
+				emake V=1 tools/${i}
+			fi
+		done
+	fi
 }
 
 multilib_src_install() {
-	emake V=1 DESTDIR="${D}" install
+	emake V=1 DESTDIR="${D}" install install-doc
 
-	exeinto "${EPREFIX}/usr/$(get_libdir)/${PN}"
-	doexe "${FILESDIR}/${PN}"
+	into "${EPREFIX}/usr/$(get_libdir)/${PN}"
+	if multilib_is_native_abi; then
+		for i in "${FFTOOLS[@]}" ; do
+			if use fftools_${i} ; then
+				dobin tools/${i}
+			fi
+		done
+	fi
 }
 
 multilib_src_install_all() {
