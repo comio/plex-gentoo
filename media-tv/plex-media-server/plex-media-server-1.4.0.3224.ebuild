@@ -6,7 +6,7 @@ EAPI=6
 
 inherit eutils user systemd unpacker
 
-COMMIT="04b80c8"
+COMMIT="7d2c839"
 
 _APPNAME="plexmediaserver"
 _USERNAME="plex"
@@ -19,12 +19,11 @@ DESCRIPTION="A free media library that is intended for use with a plex client."
 HOMEPAGE="http://www.plex.tv/"
 SRC_URI="
 	amd64? ( ${URI}/${_FULL_VERSION}/plexmediaserver_${_FULL_VERSION}_amd64.deb )
-	x86? ( ${URI}/${_FULL_VERSION}/plexmediaserver_${_FULL_VERSION}_i386.deb )
 "
 SLOT="0"
 LICENSE="Plex"
 RESTRICT="mirror bindist strip"
-KEYWORDS="-* ~amd64 ~x86"
+KEYWORDS="-* ~amd64"
 
 IUSE="plex-ffmpeg"
 
@@ -32,7 +31,7 @@ DEPEND="
 	net-dns/avahi
 	sys-apps/fix-gnustack"
 
-RDEPEND="plex-ffmpeg? ( media-video/plex-ffmpeg )"
+RDEPEND="plex-ffmpeg? ( >=media-video/plex-ffmpeg-2016.12 )"
 
 QA_DESKTOP_FILE="usr/share/applications/plexmediamanager.desktop"
 QA_PREBUILT="*"
