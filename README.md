@@ -1,5 +1,7 @@
 # plex-gentoo
 
+WARNING: The new packages will be updated only on fkmclane's overlay (https://github.com/fkmclane/overlay). Please remove plex-gentoo and install fkclane's overlay instead.
+
 My Plex ebuilds.
 ================
 
